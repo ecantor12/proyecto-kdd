@@ -45,6 +45,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
+  <link rel="stylesheet" href="{% static 'dhtmlcalendar/dhtmlxcalendar.css' %}" 
+    type="text/css"> 
+<script src="{% static 'dhtmlcalendar/dhtmlxcalendar.js' %}" 
+    type="text/javascript"></script>
 </head>
 <!--
 BODY TAG OPTIONS:
@@ -187,9 +191,8 @@ desired effect
       <ul class="sidebar-menu">
         <li class="header">HEADER</li>
         <!-- Optionally, you can add icons to the links -->
-        <li class="active"><a href="attention_period"><i class="fa fa-link"></i> <span>Atención pacientes por epoca</span></a></li>
-        <li><a href="attention_day"><i class="fa fa-link"></i> <span>Atención de pacientes por dia</span></a></li>
-        <li><a href="medicine_prescription"><i class="fa fa-link"></i> <span>Medicinas mas recetadas</span></a></li>
+        <li class="active"><a href="#"><i class="fa fa-link"></i> <span>Link</span></a></li>
+        <li><a href="#"><i class="fa fa-link"></i> <span>Another Link</span></a></li>
         <li class="treeview">
           <a href="#"><i class="fa fa-link"></i> <span>Multilevel</span>
             <span class="pull-right-container">
@@ -223,204 +226,49 @@ desired effect
 
     <!-- Main content -->
     <section class="content">
-      <!-- Small boxes (Stat box) -->
-      <div class="row">
-        <div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-aqua">
-            <div class="inner">
-              <h3>{{avg_time_medical}}<sup style="font-size: 20px">horas</sup></h3>
+             <div class="box box-primary">
+            <div class="box-header with-border">
+              <i class="fa fa-bar-chart-o"></i>
 
-              <p>Tiempo promedio espera</p>
-            </div>
-            <div class="icon">
-              <i class="fa fa-stethoscope"></i>
-            </div>
-            <a href="#" class="small-box-footer">Citas medicas</a>
-          </div>
-        </div>
-        <!-- ./col -->
-        <div class="col-lg-3 col-xs-6">
-          <!-- small box -->
-          <div class="small-box bg-green">
-            <div class="inner">
-              <h3>{{avg_time_surgeries}}<sup style="font-size: 20px">horas</sup></h3>
+              <h3 class="box-title">Atención de pacientes por temporada</h3>
 
-              <p>Tiempo promedio espera</p>
-            </div>
-            <div class="icon">
-              <i class="fa fa-heartbeat"></i>
-            </div>
-            <a href="#" class="small-box-footer">Cirugias</a>
-          </div>
-        </div>
-        <!-- ./col -->
-      </div>
-        <section class="col-lg-12 connectedSortable">
-
-          <!-- Map box -->
-          <div class="box box-solid">
-            <div class="box-header">
-              <!-- tools box -->
-              <div class="pull-right box-tools">
-                <!--<button type="button" class="btn btn-primary btn-sm daterange pull-right" data-toggle="tooltip" title="Date range">
-                  <i class="fa fa-calendar"></i></button>-->
-                <button type="button" class="btn btn-primary btn-sm pull-right" data-widget="collapse" data-toggle="tooltip" title="Collapse" style="margin-right: 5px;">
-                  <i class="fa fa-minus"></i></button>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
               </div>
-              <!-- /. tools -->
-
-              <i class="fa fa-map-marker"></i>
-
-              <h3 class="box-title">
-                Atención Pacientes por Region
-              </h3>
             </div>
             <div class="box-body">
-              <div id="world-map" style="height: 500px; width: 100%;"></div>
+
+              <form action="" method="POST">
+                {% csrf_token %}
+                Fecha1<input type="text" name="fecha1" id="fecha1">
+                fecha2<input type="text" name="fecha1" id="fecha2">
+                <input type="submit" value="Filtrar">
+              </form>
+              <div id="bar-chart" style="height: 300px;"></div>
             </div>
             <!-- /.box-body-->
-            <div class="box-footer no-border">
-              <table id="example2" class="table table-bordered table-striped">
+          </div>
+
+    <table id="example2" class="table table-bordered table-striped">
                 <thead>
                 <tr>
-                  <th>Departamento</th>
-                  <th>Municipio</th>
-                  <th>Clinica</th>
-                  <th># Pacientes</th>
+                  <th>Día</th>
+                  <th>Cantidad Pacientes</th>
                 </tr>
                 </thead>
                 <tbody>
-                  {% for result in hospitals %}
+                  {% for result in data %}
                     <tr>
-                      <td>{{result.departamento}}</td>
-                      <td>{{result.municipio}}</td>
-                      <td>{{result.nombre}}</td>
-                      <td>{{result.suma}}</td>
+                      <td>{{result.dayname}}</td>
+                      <td>{{result.cantidad_pacientes}}</td>
+
                     </tr>
                   {% endfor %}
                 </tbody>
-                <tfoot>
-                <tr>
-                  <th>Departamento</th>
-                  <th>Municipio</th>
-                  <th>Clinica</th>
-                  <th># Pacientes</th>
-                </tr>
-                </tfoot>
+
               </table>
-            <!-- /.row -->
-            </div>
-          </div>
-          <!-- /.box -->
-
-          <!-- Map box -->
-          <div class="box box-solid">
-            <div class="box-header">
-              <!-- tools box -->
-              <div class="pull-right box-tools">
-                <!--<button type="button" class="btn btn-primary btn-sm daterange pull-right" data-toggle="tooltip" title="Date range">
-                  <i class="fa fa-calendar"></i></button>-->
-                <button type="button" class="btn btn-primary btn-sm pull-right" data-widget="collapse" data-toggle="tooltip" title="Collapse" style="margin-right: 5px;">
-                  <i class="fa fa-minus"></i></button>
-              </div>
-              <!-- /. tools -->
-
-              <i class="fa fa-map-marker"></i>
-
-              <h3 class="box-title">
-                Ocupación Hospitales por Epocas del Año
-              </h3>
-            </div>
-            <div class="box-body">
-              <!--<div id="world-map" style="height: 500px; width: 100%;"></div>-->
-            </div>
-            <!-- /.box-body-->
-            <div class="box-footer no-border">
-              <table id="example3" class="table table-bordered table-striped">
-                <thead>
-                <tr>
-                  <th>Clinica</th>
-                  <th>Epoca del año</th>
-                  <th>Total</th>
-                </tr>
-                </thead>
-                <tbody>
-                  {% for result in by_clinic %}
-                    <tr>
-                      <td>{{result.nombre_ips}}</td>
-                      <td>{{result.period_year}}</td>
-                      <td>{{result.count}}</td>
-                    </tr>
-                  {% endfor %}
-                </tbody>
-                <tfoot>
-                <tr>
-                  <th>Clinica</th>
-                  <th>Epoca del año</th>
-                  <th>Total</th>
-                </tr>
-                </tfoot>
-              </table>
-            <!-- /.row -->
-            </div>
-          </div>
-          <!-- /.box -->
-
-          <!-- Map box -->
-          <div class="box box-solid">
-            <div class="box-header">
-              <!-- tools box -->
-              <div class="pull-right box-tools">
-                <!--<button type="button" class="btn btn-primary btn-sm daterange pull-right" data-toggle="tooltip" title="Date range">
-                  <i class="fa fa-calendar"></i></button>-->
-                <button type="button" class="btn btn-primary btn-sm pull-right" data-widget="collapse" data-toggle="tooltip" title="Collapse" style="margin-right: 5px;">
-                  <i class="fa fa-minus"></i></button>
-              </div>
-              <!-- /. tools -->
-
-              <i class="fa fa-map-marker"></i>
-
-              <h3 class="box-title">
-                Ocupación Medicos por Epocas del Año
-              </h3>
-            </div>
-            <div class="box-body">
-              <!--<div id="world-map" style="height: 500px; width: 100%;"></div>-->
-            </div>
-            <!-- /.box-body-->
-            <div class="box-footer no-border">
-              <table id="example4" class="table table-bordered table-striped">
-                <thead>
-                <tr>
-                  <th>Medico</th>
-                  <th>Epoca del año</th>
-                  <th>Total</th>
-                </tr>
-                </thead>
-                <tbody>
-                  {% for result in by_medico %}
-                    <tr>
-                      <td>{{result.nombre}}</td>
-                      <td>{{result.period_year}}</td>
-                      <td>{{result.count}}</td>
-                    </tr>
-                  {% endfor %}
-                </tbody>
-                <tfoot>
-                <tr>
-                  <th>Clinica</th>
-                  <th>Epoca del año</th>
-                  <th>Total</th>
-                </tr>
-                </tfoot>
-              </table>
-            <!-- /.row -->
-            </div>
-          </div>
-          <!-- /.box -->
-
-        </section>
     </section>
     <!-- /.content -->
 
@@ -563,67 +411,62 @@ desired effect
 <!-- DataTables -->
 <script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'plugins/datatables/dataTables.bootstrap.min.js' %}"></script>
+<!-- FLOT CHARTS -->
+<script src="{% static 'plugins/flot/jquery.flot.min.js' %}"></script>
+<!-- FLOT RESIZE PLUGIN - allows the chart to redraw when the window is resized -->
+<script src="{% static 'plugins/flot/jquery.flot.resize.min.js' %}"></script>
+<!-- FLOT PIE PLUGIN - also used to draw donut charts -->
+<script src="{% static 'plugins/flot/jquery.flot.pie.min.js' %}"></script>
+<!-- FLOT CATEGORIES PLUGIN - Used to draw bar charts -->
+<script src="{% static 'plugins/flot/jquery.flot.categories.min.js' %}"></script>
 
-<script>
-  $(function () {
-    $("#example1").DataTable();
-    $('#example2').DataTable({
-      "paging": true,
-      "lengthChange": false,
-      "searching": false,
-      "ordering": true,
-      "info": true,
-      "autoWidth": false
-    });
-    $('#example3').DataTable({
-      "paging": true,
-      "lengthChange": false,
-      "searching": false,
-      "ordering": true,
-      "info": true,
-      "autoWidth": false
-    });
-    $('#example4').DataTable({
-      "paging": true,
-      "lengthChange": false,
-      "searching": false,
-      "ordering": true,
-      "info": true,
-      "autoWidth": false
-    });    
-  });
-</script>
+
 
 
 
 <script type="text/javascript">
-  //jvectormap data
-  var r= {{ regions|safe }}
-  //World map by jvectormap
-  $('#world-map').vectorMap({
-    map: 'co_mill',
-    backgroundColor: "transparent",
-    regionStyle: {
-      initial: {
-        fill: '#e4e4e4',
-        "fill-opacity": 1,
-        stroke: 'none',
-        "stroke-width": 0,
-        "stroke-opacity": 1
+
+
+    var myCalendar = new dhtmlXCalendarObject(["fecha1","fecha2"]);
+
+
+        /*
+     * BAR CHART
+     * ---------
+     */
+     datos_grafico = new Array();
+     //index, item in enumerate(items)
+     index = 0
+     {% for result in data %}
+         
+       datos_grafico[index] = ["{{result.dayname}}",{{result.cantidad_pacientes}}];
+       index+=1;
+
+    {% endfor %}
+    var bar_data = {
+      //data: [["January", 10], ["February", 8], ["March", 4], ["April", 13], ["May", 17], ["June", 9]],
+      data : datos_grafico,
+      color: "#3c8dbc"
+    };
+    $.plot("#bar-chart", [bar_data], {
+      grid: {
+        borderWidth: 1,
+        borderColor: "#f3f3f3",
+        tickColor: "#f3f3f3"
+      },
+      series: {
+        bars: {
+          show: true,
+          barWidth: 0.5,
+          align: "center"
+        }
+      },
+      xaxis: {
+        mode: "categories",
+        tickLength: 0
       }
-    },
-    series: {
-      regions: [{
-        values: r,
-        scale: ["#92c1dc", "#ebf4f9"],
-        normalizeFunction: 'polynomial'
-      }]
-    },
-    onRegionLabelShow: function (e, el, code) {
-      if (typeof r[code] != "undefined")
-        el.html(el.html() + ': ' + r[code] + ' atendidos');
-    }
-  });
+    });
+    /* END BAR CHART */
 </script>
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
      Both of these plugins are recommended to enhance the
