@@ -1,6 +1,7 @@
 from django.shortcuts import render, render_to_response
 from django.template import RequestContext, loader
 from reports.tools import attentionByPeriodOfYear,attentionByDayOfWeek,medicinePrescription
+from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 
 def reports(request):
@@ -108,6 +109,9 @@ def attention_day(request):
 	data = attentionByDayOfWeek()
 	return render_to_response("reports/attention_day.html",{"data":data})
 
+@csrf_exempt
 def medicine_prescription(request):
+	print request
+	#form = UserInfoReport(request.POST or request.GET)
 	data = medicinePrescription()
 	return render_to_response("reports/medicine_prescription.html",{"data":data})
