@@ -1,6 +1,6 @@
 from django.shortcuts import render, render_to_response
 from django.template import RequestContext, loader
-
+from reports.tools import attentionByPeriodOfYear,attentionByDayOfWeek
 # Create your views here.
 
 def reports(request):
@@ -95,3 +95,16 @@ def reports(request):
 		"by_medico": by_medico,
 		})
 	return render_to_response("reports/home.html", variables)
+
+#atencion de pacientes por periodo del anio
+def attention_period(request):
+	data = attentionByPeriodOfYear()
+	return render_to_response("reports/attention_period.html",{"data":data})
+
+#atencion de pacientes por dia de la semana
+def attention_day(request):
+	
+	if request.method == 'POST':
+		print request.POST['fecha1']
+	data = attentionByDayOfWeek()
+	return render_to_response("reports/attention_day.html",{"data":data})

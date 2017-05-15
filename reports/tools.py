@@ -54,4 +54,16 @@ def patientCarePeriodYear():
 	
 	return by_clinic, by_medico
 
+#atencion de pacientes por periodo del anio
+def attentionByPeriodOfYear():
+	cursor1 = connection.cursor()
+	query = "select period_year, sum(cantidad_pacientes) as cantidad_pacientes from(select period_year, count(period_year) as cantidad_pacientes from citas_medicas join fecha on citas_medicas.fecha2 = fecha.idfecha where period_year !='' group by period_year union select period_year, count(period_year) as cantidad_pacientes from urgencia join fecha on urgencia.fecha2 = fecha.idfecha where period_year !=''    group by period_year union select period_year, count(period_year) as cantidad_pacientes from hospitalizacion join fecha on hospitalizacion.fecha1 = fecha.idfecha where period_year !='' group by period_year) as tmp group by period_year"
+	cursor1.execute(query)
+	return dictfetchall(cursor1)
 
+#atencion de pacientes por dia de la semana
+def attentionByDayOfWeek():
+	cursor1 = connection.cursor()
+	query = "select dayname, sum(cantidad_pacientes) as cantidad_pacientes from(select fecha.day_name as dayname, count(fecha.day_name) as cantidad_pacientes from citas_medicas join fecha on citas_medicas.fecha2 = fecha.idfecha group by fecha.day_name union select fecha.day_name as dayname, count(fecha.day_name) as cantidad_pacientes from urgencia join fecha on urgencia.fecha2 = fecha.idfecha group by fecha.day_name union select fecha.day_name as dayname, count(fecha.day_name) as cantidad_pacientes from hospitalizacion join fecha on hospitalizacion.fecha2 = fecha.idfecha group by fecha.day_name) as tmp group by dayname"
+	cursor1.execute(query)
+	return dictfetchall(cursor1)
