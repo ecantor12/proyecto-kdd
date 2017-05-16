@@ -102,16 +102,19 @@ def attention_period(request):
 	data = attentionByPeriodOfYear()
 	return render_to_response("reports/attention_period.html",{"data":data})
 
+@csrf_exempt
 #atencion de pacientes por dia de la semana
 def attention_day(request):	
 	if request.method == 'POST':
-		print request.POST['fecha1']
-	data = attentionByDayOfWeek()
+		data = attentionByDayOfWeek(request.POST['fecha1'], request.POST['fecha2'])
+	else:
+		data = attentionByDayOfWeek()
 	return render_to_response("reports/attention_day.html",{"data":data})
 
 @csrf_exempt
 def medicine_prescription(request):
-	print request
-	#form = UserInfoReport(request.POST or request.GET)
-	data = medicinePrescription()
+	if request.method == 'POST':
+		data = medicinePrescription(request.POST['fecha1'], request.POST['fecha2'])
+	else:
+		data = medicinePrescription()
 	return render_to_response("reports/medicine_prescription.html",{"data":data})

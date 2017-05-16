@@ -62,15 +62,24 @@ def attentionByPeriodOfYear():
 	return dictfetchall(cursor1)
 
 #atencion de pacientes por dia de la semana
-def attentionByDayOfWeek():
+def attentionByDayOfWeek(fecha1=None,fecha2=None):
 	cursor1 = connection.cursor()
-	query = "select dayname, sum(cantidad_pacientes) as cantidad_pacientes from(select fecha.day_name as dayname, count(fecha.day_name) as cantidad_pacientes from citas_medicas join fecha on citas_medicas.fecha2 = fecha.idfecha group by fecha.day_name union select fecha.day_name as dayname, count(fecha.day_name) as cantidad_pacientes from urgencia join fecha on urgencia.fecha2 = fecha.idfecha group by fecha.day_name union select fecha.day_name as dayname, count(fecha.day_name) as cantidad_pacientes from hospitalizacion join fecha on hospitalizacion.fecha2 = fecha.idfecha group by fecha.day_name) as tmp group by dayname"
+	if fecha1!=None and fecha2!=None:
+		query = "select dayname, sum(cantidad_pacientes) as cantidad_pacientes from(select fecha.day_name as dayname, count(fecha.day_name) as cantidad_pacientes from citas_medicas join fecha on citas_medicas.fecha2 = fecha.idfecha where fecha.date_actual>='"+fecha1+"' and fecha.date_actual<='"+fecha2+"' group by fecha.day_name union select fecha.day_name as dayname, count(fecha.day_name) as cantidad_pacientes from urgencia join fecha on urgencia.fecha2 = fecha.idfecha where fecha.date_actual>='"+fecha1+"' and fecha.date_actual<='"+fecha2+"' group by fecha.day_name union select fecha.day_name as dayname, count(fecha.day_name) as cantidad_pacientes from hospitalizacion join fecha on hospitalizacion.fecha2 = fecha.idfecha where fecha.date_actual>='"+fecha1+"' and fecha.date_actual<='"+fecha2+"' group by fecha.day_name) as tmp group by dayname"
+	else:
+		query = "select dayname, sum(cantidad_pacientes) as cantidad_pacientes from(select fecha.day_name as dayname, count(fecha.day_name) as cantidad_pacientes from citas_medicas join fecha on citas_medicas.fecha2 = fecha.idfecha group by fecha.day_name union select fecha.day_name as dayname, count(fecha.day_name) as cantidad_pacientes from urgencia join fecha on urgencia.fecha2 = fecha.idfecha group by fecha.day_name union select fecha.day_name as dayname, count(fecha.day_name) as cantidad_pacientes from hospitalizacion join fecha on hospitalizacion.fecha2 = fecha.idfecha group by fecha.day_name) as tmp group by dayname"
 	cursor1.execute(query)
 	return dictfetchall(cursor1)
 
 #medicinas mas recetadas
-def medicinePrescription():
+def medicinePrescription(fecha1=None,fecha2=None):
 	cursor1 = connection.cursor()
-	query = "select nombre_generico,count(nombre_generico)as cantidad from medicamentos_resetados join medicamento on medicamento.idmedicamento=medicamentos_resetados.medicamento_idmedicamento join fecha on fecha_idfecha=idfecha where date_actual >='1995-01-01' and date_actual <='2017-01-01' group by nombre_generico order by cantidad DESC limit 10"
+	print fecha1
+	if fecha1!=None and fecha2!=None:
+		print "xx"
+		query = "select nombre_generico,count(nombre_generico)as cantidad from medicamentos_resetados join medicamento on medicamento.idmedicamento=medicamentos_resetados.medicamento_idmedicamento join fecha on fecha_idfecha=idfecha where date_actual >='"+fecha1+"' and date_actual <='"+fecha2+"' group by nombre_generico order by cantidad DESC limit 10"
+	else:
+		print "2xx"
+		query = "select nombre_generico,count(nombre_generico)as cantidad from medicamentos_resetados join medicamento on medicamento.idmedicamento=medicamentos_resetados.medicamento_idmedicamento join fecha on fecha_idfecha=idfecha group by nombre_generico order by cantidad DESC limit 10"
 	cursor1.execute(query)
 	return dictfetchall(cursor1)
