@@ -19,39 +19,6 @@
 
     <!-- Main content -->
     <section class="content">
-
-
-      <div class="btn-group">
-        <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#filters">
-          <i class="icon-filter"></i>Filtros
-        </button>
-      </div>
-      <div class="panel-collapse collapse" id="filters">
-        <div class="panel panel-default">
-          <div class="panel-body">
-            <form class="form-horizontal" method="post" action="{{ request.path_info }}" role="form">
-              {% csrf_token %}
-              {{ form.non_field_errors }}
-              {% for field in form %}
-                {{ field.errors }}
-                <div class="form-group">
-                  <label class="col-lg-2 control-label" for="id_{{ field.name }}">{{ field.label_tag }}</label>
-                  <div class="col-lg-6">{{ field }}</div>
-                </div>
-              {% endfor %}
-              <div class="form-group">
-                <div class="col-lg-offset-1 col-lg-10">
-                  <button class="btn btn-primary" type="submit">Buscar</button>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-      <br>
-      <br>
-
-
              <div class="box box-primary">
             <div class="box-header with-border">
               <i class="fa fa-bar-chart-o"></i>
@@ -66,13 +33,7 @@
             </div>
             <div class="box-body">
 
-              <!--<form action="" method="POST">
-                {% csrf_token %}
-                Fecha1<input type="text" name="fecha1" id="fecha1">
-                fecha2<input type="text" name="fecha1" id="fecha2">
-                <input type="submit" value="Filtrar">
-              </form>-->
-              <div id="bar-chart" style="height: 300px;"></div>
+              
             </div>
             <!-- /.box-body-->
           </div>
@@ -80,16 +41,15 @@
     <table id="example2" class="table table-bordered table-striped">
                 <thead>
                 <tr>
-                  <th>Día</th>
-                  <th>Cantidad Pacientes</th>
+                  <th>Medicamento</th>
+                  
                 </tr>
                 </thead>
                 <tbody>
                   {% for result in data %}
                     <tr>
-                      <td>{{result.dayname}}</td>
-                      <td>{{result.cantidad_pacientes}}</td>
-
+                      <td>{{result.nombre_medicamento}}</td>
+                      
                     </tr>
                   {% endfor %}
                 </tbody>
@@ -102,13 +62,14 @@
   </div>
   <!-- /.content-wrapper -->
 
+  <!-- /.control-sidebar -->
+  <!-- Add the sidebar's background. This div must be placed
+       immediately after the control sidebar -->
+  <div class="control-sidebar-bg"></div>
+
 
 <script type="text/javascript">
-
-
-    var myCalendar = new dhtmlXCalendarObject(["id_initial_date", "id_final_date"]);
-
-
+    var myCalendar = new dhtmlXCalendarObject(["fecha1","fecha2"]);
         /*
      * BAR CHART
      * ---------
@@ -118,9 +79,8 @@
      index = 0
      {% for result in data %}
          
-       datos_grafico[index] = ["{{result.dayname}}",{{result.cantidad_pacientes}}];
+       datos_grafico[index] = ["{{result.nombre_generico}}",{{result.cantidad}}];
        index+=1;
-
     {% endfor %}
     var bar_data = {
       //data: [["January", 10], ["February", 8], ["March", 4], ["April", 13], ["May", 17], ["June", 9]],
@@ -147,10 +107,9 @@
     });
     /* END BAR CHART */
 </script>
-
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
      Both of these plugins are recommended to enhance the
      user experience. Slimscroll is required when using the
      fixed layout. -->
-
-{% endblock %}
+</body>
+</html>
