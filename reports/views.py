@@ -138,10 +138,18 @@ def medicine_prescription(request):
 	print "initial_date==========", str(initial_date)
 	print "final_date============", str(final_date)
 
+	avg_medicines = avgMedicines(initial_date, final_date)
+	if avg_medicines[0]['precio']:
+		avg_medicines = round(avg_medicines[0]['precio'], 2)
+	else:
+		avg_medicines = 0.0
+
 	data = medicinePrescription(initial_date, final_date)
+
 
 	variables = RequestContext(request, {
 		"data": data,
+		"avg_medicines": avg_medicines,
 		"form": form,
 		})
 	
@@ -196,6 +204,11 @@ def products_together(request):
 	print "final_date============", str(final_date)
 
 	data = productsTogether(initial_date, final_date)
-	
-	return render_to_response("reports/products_together.html",{"data":data})
+
+	variables = RequestContext(request, {
+		"data": data,
+		"form": form,
+		})
+
+	return render_to_response("reports/products_together.html", variables)
 
