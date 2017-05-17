@@ -1,6 +1,6 @@
 from django.shortcuts import render, render_to_response
 from django.template import RequestContext, loader
-from reports.tools import attentionByPeriodOfYear,attentionByDayOfWeek,medicinePrescription
+from reports.tools import attentionByPeriodOfYear,attentionByDayOfWeek,medicinePrescription,productsTogether
 from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 
@@ -118,3 +118,8 @@ def medicine_prescription(request):
 	else:
 		data = medicinePrescription()
 	return render_to_response("reports/medicine_prescription.html",{"data":data})
+
+
+def products_together(request):
+	data = productsTogether()
+	return render_to_response("reports/products_together.html",{"data":data})

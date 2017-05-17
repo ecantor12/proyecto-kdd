@@ -76,10 +76,41 @@ def medicinePrescription(fecha1=None,fecha2=None):
 	cursor1 = connection.cursor()
 	print fecha1
 	if fecha1!=None and fecha2!=None:
-		print "xx"
 		query = "select nombre_generico,count(nombre_generico)as cantidad from medicamentos_resetados join medicamento on medicamento.idmedicamento=medicamentos_resetados.medicamento_idmedicamento join fecha on fecha_idfecha=idfecha where date_actual >='"+fecha1+"' and date_actual <='"+fecha2+"' group by nombre_generico order by cantidad DESC limit 10"
 	else:
-		print "2xx"
 		query = "select nombre_generico,count(nombre_generico)as cantidad from medicamentos_resetados join medicamento on medicamento.idmedicamento=medicamentos_resetados.medicamento_idmedicamento join fecha on fecha_idfecha=idfecha group by nombre_generico order by cantidad DESC limit 10"
 	cursor1.execute(query)
 	return dictfetchall(cursor1)
+
+#algoritmo apriori para medicamentos que se venden juntos
+def productsTogether():
+	cursor1 = connection.cursor()
+	query = "select id_formula,medicamento_idmedicamento,concat (nombre_generico,' ',presentacion) as nombre_medicamento from medicamentos_resetados inner join medicamento on medicamentos_resetados.medicamento_idmedicamento = medicamento.idmedicamento order by id_formula"
+	cursor1.execute(query)
+	results = dictfetchall(cursor1)
+
+	datos = []
+	elementos_por_formula =[]
+	idformula = results[0]['id_formula']
+	
+	for obj in results:
+		
+		if idformula == obj['id_formula']:
+			elementos_por_formula.append(obj['nombre_medicamento'])
+		else:
+			#guardamos el grupo de medicamentos
+			datos.append(elementos_por_formula)
+			idformula = obj['id_formula']
+			elementos_por_formula = []
+			elementos_por_formula.append(obj['nombre_medicamento'])
+
+	from apyori import apriori
+	results = list(apriori(datos))
+
+	medicamentos = []
+	for obj in results:
+		for x in obj.items:
+			#print x
+			medicamentos.append(x)
+	
+	return medicamentos
