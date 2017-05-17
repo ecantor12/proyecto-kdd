@@ -1,0 +1,212 @@
+{% extends "reports/base.html" %}
+{% load i18n %}
+{% block content %}
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        Dashboard
+        <small>Control panel</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Dashboard</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+
+      <div class="btn-group">
+        <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#filters">
+          <i class="icon-filter"></i>Filtros
+        </button>
+      </div>
+      <div class="panel-collapse collapse" id="filters">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <form class="form-horizontal" method="post" action="{{ request.path_info }}" role="form">
+              {% csrf_token %}
+              {{ form.non_field_errors }}
+              {% for field in form %}
+                {{ field.errors }}
+                <div class="form-group">
+                  <label class="col-lg-2 control-label" for="id_{{ field.name }}">{{ field.label_tag }}</label>
+                  <div class="col-lg-6">{{ field }}</div>
+                </div>
+              {% endfor %}
+              <div class="form-group">
+                <div class="col-lg-offset-1 col-lg-10">
+                  <button class="btn btn-primary" type="submit">Buscar</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <br>
+      <br>
+             <div class="box box-primary">
+            <div class="box-header with-border">
+              <i class="fa fa-bar-chart-o"></i>
+
+              <h3 class="box-title">Atención de pacientes por temporada</h3>
+
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+            </div>
+            <div class="box-body">
+              <div id="bar-chart" style="height: 300px;"></div>
+            </div>
+            <!-- /.box-body-->
+          </div>
+
+    <table id="example2" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                  <th>Periodo</th>
+                  <th>Cantidad Pacientes</th>
+                </tr>
+                </thead>
+                <tbody>
+                  {% for result in data %}
+                    <tr>
+                      <td>{{result.period_year}}</td>
+                      <td>{{result.cantidad_pacientes}}</td>
+
+                    </tr>
+                  {% endfor %}
+                </tbody>
+
+              </table>
+
+
+            <div class="box">
+            <div class="box-header">
+              <h3 class="box-title">Ocupación Hospitales por Epocas del Año</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table id="example1" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                  <th>Clinica</th>
+                  <th>Epoca del año</th>
+                  <th>Total</th>
+                </tr>
+                </thead>
+                <tbody>
+                  {% for result in by_clinic %}
+                    <tr>
+                      <td>{{result.nombre_ips}}</td>
+                      <td>{{result.period_year}}</td>
+                      <td>{{result.count}}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+                <tfoot>
+                  <th>Clinica</th>
+                  <th>Epoca del año</th>
+                  <th>Total</th>
+                </tfoot>
+              </table>
+            <!-- /.row -->
+            </div>
+          </div>
+
+            <div class="box">
+            <div class="box-header">
+              <h3 class="box-title">Ocupación Medicos por Epocas del Año</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table id="example3" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                  <th>Medico</th>
+                  <th>Epoca del año</th>
+                  <th>Total</th>
+                </tr>
+                </thead>
+                <tbody>
+                  {% for result in by_medico %}
+                    <tr>
+                      <td>{{result.nombre}}</td>
+                      <td>{{result.period_year}}</td>
+                      <td>{{result.count}}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+                <tfoot>
+                  <th>Clinica</th>
+                  <th>Epoca del año</th>
+                  <th>Total</th>
+
+                </tfoot>
+              </table>
+            <!-- /.row -->
+            </div>
+          </div>
+    </section>
+    <!-- /.content -->
+
+
+  </div>
+  <!-- /.content-wrapper -->
+
+<script type="text/javascript">
+    $("#example1").DataTable();
+    $("#example3").DataTable();
+    
+
+    var myCalendar = new dhtmlXCalendarObject(["id_initial_date", "id_final_date"]);
+        /*
+     * BAR CHART
+     * ---------
+     */
+     datos_grafico = new Array();
+     //index, item in enumerate(items)
+     index = 0
+     {% for result in data %}
+         
+       datos_grafico[index] = ["{{result.period_year}}",{{result.cantidad_pacientes}}];
+       index+=1;
+
+    {% endfor %}
+    var bar_data = {
+      //data: [["January", 10], ["February", 8], ["March", 4], ["April", 13], ["May", 17], ["June", 9]],
+      data : datos_grafico,
+      color: "#3c8dbc"
+    };
+    $.plot("#bar-chart", [bar_data], {
+      grid: {
+        borderWidth: 1,
+        borderColor: "#f3f3f3",
+        tickColor: "#f3f3f3"
+      },
+      series: {
+        bars: {
+          show: true,
+          barWidth: 0.5,
+          align: "center"
+        }
+      },
+      xaxis: {
+        mode: "categories",
+        tickLength: 0
+      }
+    });
+    /* END BAR CHART */
+</script>
+<!-- Optionally, you can add Slimscroll and FastClick plugins.
+     Both of these plugins are recommended to enhance the
+     user experience. Slimscroll is required when using the
+     fixed layout. -->
+
+{% endblock %}
