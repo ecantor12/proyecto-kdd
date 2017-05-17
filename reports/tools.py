@@ -141,13 +141,15 @@ def productsTogether(initial_date, final_date):
 			elementos_por_formula = []
 			elementos_por_formula.append(obj['nombre_medicamento'])
 
+	#algoritmo apriori
 	from apyori import apriori
+
 	results = list(apriori(datos))
 
 	medicamentos = []
 	for obj in results:
 		for x in obj.items:
-			#print x
-			medicamentos.append(x)
+			#print x	
+			medicamentos.append({'nombre_medicamento': x})
 	
 	return medicamentos

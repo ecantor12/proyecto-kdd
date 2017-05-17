@@ -144,7 +144,7 @@ def medicine_prescription(request):
 		"data": data,
 		"form": form,
 		})
-
+	
 	return render_to_response("reports/medicine_prescription.html", variables)
 	
 
