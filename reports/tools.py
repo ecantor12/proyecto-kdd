@@ -34,6 +34,19 @@ def avgTimeSurgeries(initial_date, final_date):
 	
 	return rows
 
+def avgMedicines(initial_date, final_date):
+	
+	cursor = connection.cursor()
+	if initial_date!=None and final_date!=None:
+		query = "select avg(precio) as precio from medicamentos_resetados INNER JOIN fecha ON medicamentos_resetados.fecha_idfecha = fecha.idfecha where fecha.date_actual>='"+str(initial_date)+"' and fecha.date_actual<='"+str(final_date)+"'"
+	else:
+		query = "select avg(precio) as precio from medicamentos_resetados"
+
+	cursor.execute(query)
+	rows = dictfetchall(cursor)
+	
+	return rows
+
 def patientCare(initial_date, final_date):
 	cursor1 = connection.cursor()
 	cursor2 = connection.cursor()
@@ -94,7 +107,6 @@ def medicinePrescription(initial_date, final_date):
 	else:
 		query = "select nombre_generico,count(nombre_generico)as cantidad from medicamentos_resetados join medicamento on medicamento.idmedicamento=medicamentos_resetados.medicamento_idmedicamento join fecha on fecha_idfecha=idfecha group by nombre_generico order by cantidad DESC limit 10"
 
-	#query = "select nombre_generico,count(nombre_generico)as cantidad from medicamentos_resetados join medicamento on medicamento.idmedicamento=medicamentos_resetados.medicamento_idmedicamento join fecha on fecha_idfecha=idfecha where date_actual >='1995-01-01' and date_actual <='2017-01-01' group by nombre_generico order by cantidad DESC limit 10"
 	cursor1.execute(query)
 	return dictfetchall(cursor1)
 
