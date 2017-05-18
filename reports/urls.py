@@ -8,4 +8,5 @@ urlpatterns = [
         url(r'^medicine_prescription/$', views.medicine_prescription),
         url(r'^payments/$', views.paymentsByCompany),
         url(r'^products_together/$', views.products_together),
+        url(r'^profiles/$', views.profilesEps),
     ]

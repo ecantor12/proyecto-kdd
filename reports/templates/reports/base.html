@@ -60,7 +60,7 @@
 
 <!-- Morris.js charts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
-<!--<script src="{% static 'plugins/morris/morris.min.js' %}"></script>-->
+<script src="{% static 'plugins/morris/morris.min.js' %}"></script>
 <!-- Sparkline -->
 <script src="{% static 'plugins/sparkline/jquery.sparkline.min.js' %}"></script>
 <!-- jvectormap -->
@@ -90,6 +90,8 @@
 <!-- DataTables -->
 <script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'plugins/datatables/dataTables.bootstrap.min.js' %}"></script>
+<!-- ChartJS 1.0.1 -->
+<script src="{% static 'plugins/chartjs/Chart.min.js' %}"></script>
 <!-- FLOT CHARTS -->
 <script src="{% static 'plugins/flot/jquery.flot.min.js' %}"></script>
 <!-- FLOT RESIZE PLUGIN - allows the chart to redraw when the window is resized -->
@@ -235,9 +237,12 @@
         <li class="active"><a href="/attention_period"><i class="fa fa-link"></i> <span>Atención pacientes por epoca</span></a></li>
         <li><a href="/attention_day"><i class="fa fa-link"></i> <span>Atención de pacientes por dia</span></a></li>
         <li><a href="/medicine_prescription"><i class="fa fa-link"></i> <span>Medicinas mas recetadas</span></a></li>
+
         <li><a href="/products_together"><i class="fa fa-link"></i> <span>Medicamentos juntos</span></a></li>
         <li><a href="/payments"><i class="fa fa-link"></i> <span>Pagos</span></a></li>
+        <li><a href="/profiles"><i class="fa fa-link"></i> <span>Perfiles</span></a></li>
         <!--<li class="treeview">
+
           <a href="#"><i class="fa fa-link"></i> <span>Multilevel</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>

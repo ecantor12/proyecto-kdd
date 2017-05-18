@@ -134,7 +134,11 @@ def payments(initial_date, final_date):
 #algoritmo apriori para medicamentos que se venden juntos
 def productsTogether(initial_date, final_date):
 	cursor1 = connection.cursor()
-	query = "select id_formula,medicamento_idmedicamento,concat (nombre_generico,' ',presentacion) as nombre_medicamento from medicamentos_resetados inner join medicamento on medicamentos_resetados.medicamento_idmedicamento = medicamento.idmedicamento order by id_formula"
+	if initial_date!=None and final_date!=None:
+		query = "select id_formula,medicamento_idmedicamento,concat (nombre_generico,' ',presentacion) as nombre_medicamento from medicamentos_resetados inner join medicamento on medicamentos_resetados.medicamento_idmedicamento = medicamento.idmedicamento inner join fecha on medicamentos_resetados.fecha_idfecha=fecha.idfecha where fecha.date_actual>='"+str(initial_date)+"' and fecha.date_actual<='"+str(final_date)+"' order by id_formula"
+	else:
+		query = "select id_formula,medicamento_idmedicamento,concat (nombre_generico,' ',presentacion) as nombre_medicamento from medicamentos_resetados inner join medicamento on medicamentos_resetados.medicamento_idmedicamento = medicamento.idmedicamento order by id_formula"
+
 	cursor1.execute(query)
 	results = dictfetchall(cursor1)
 
@@ -153,13 +157,35 @@ def productsTogether(initial_date, final_date):
 			elementos_por_formula = []
 			elementos_por_formula.append(obj['nombre_medicamento'])
 
+	#algoritmo apriori
 	from apyori import apriori
+
 	results = list(apriori(datos))
 
 	medicamentos = []
 	for obj in results:
 		for x in obj.items:
-			#print x
-			medicamentos.append(x)
+			#print x	
+			medicamentos.append({'nombre_medicamento': x})
 	
 	return medicamentos
+
+
+def profiles(limit):
+
+	cursor = connection.cursor()
+	
+	if limit:
+		query = "Select demografia_iddemografia,estado_civil,sexo,nivel_escolaridad,estrato,count(demografia_iddemografia) as total from afiliaciones join persona on persona.idpersona=persona_idpersona join demografia on demografia.iddemografia=afiliaciones.demografia_iddemografia where persona.proviene_otra_eps='1' group by demografia_iddemografia,estado_civil,sexo,nivel_escolaridad,estrato order by total DESC limit "+str(limit)
+	else:
+		query = "Select demografia_iddemografia,estado_civil,sexo,nivel_escolaridad,estrato,count(demografia_iddemografia) as total from afiliaciones join persona on persona.idpersona=persona_idpersona join demografia on demografia.iddemografia=afiliaciones.demografia_iddemografia where persona.proviene_otra_eps='1' group by demografia_iddemografia,estado_civil,sexo,nivel_escolaridad,estrato order by total"
+	
+	#if initial_date!=None and final_date!=None:
+	#	query = "select nombre, sum(valor_pago) as pagos from pagos join cotizante on cotizante_idcotizante=idcotizante INNER JOIN fecha ON pagos.fecha_idfecha = fecha.idfecha where fecha.date_actual >= '"+str(initial_date)+"' and fecha.date_actual <= '"+str(final_date)+"' group by nombre order by pagos"
+	#else:
+	#	query = "select nombre, sum(valor_pago) as pagos from pagos join cotizante on cotizante_idcotizante=idcotizante INNER JOIN fecha ON pagos.fecha_idfecha = fecha.idfecha group by nombre order by pagos"
+
+	cursor.execute(query)
+	profiles = dictfetchall(cursor)
+	
+	return profiles
