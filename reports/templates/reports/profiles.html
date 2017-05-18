@@ -1,0 +1,372 @@
+{% extends "reports/base.html" %}
+{% load i18n %}
+{% block content %}
+
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        Perfiles de usuarios que provienen de otras EPS
+        <small>Control panel</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Dashboard</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+
+      <div class="btn-group">
+        <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#filters">
+          <i class="icon-filter"></i>Filtros
+        </button>
+      </div>
+      <div class="panel-collapse collapse" id="filters">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <form class="form-horizontal" method="post" action="{{ request.path_info }}" role="form">
+              {% csrf_token %}
+              {{ form.non_field_errors }}
+              {% for field in form %}
+                {{ field.errors }}
+                <div class="form-group">
+                  <label class="col-lg-2 control-label" for="id_{{ field.name }}">{{ field.label_tag }}</label>
+                  <div class="col-lg-6">{{ field }}</div>
+                </div>
+              {% endfor %}
+              <div class="form-group">
+                <div class="col-lg-offset-1 col-lg-10">
+                  <button class="btn btn-primary" type="submit">Buscar</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <br>
+      <br>
+
+
+      <div class="row">
+        <div class="col-lg-3 col-xs-6">
+          <!-- small box -->
+          <div class="small-box bg-aqua">
+            <div class="inner">
+              <h3>{{total}}<sup style="font-size: 20px">usuarios</sup></h3>
+
+              <p>Total usuarios</p>
+            </div>
+            <div class="icon">
+              <i class="fa fa-stethoscope"></i>
+            </div>
+            <a href="#" class="small-box-footer">Usuarios otra EPS</a>
+          </div>
+        </div>
+      </div>
+
+             <div class="box box-primary">
+            <div class="box-header with-border">
+              <i class="fa fa-bar-chart-o"></i>
+
+              <h3 class="box-title">Perfiles de usuarios que provienen de otra EPS</h3>
+
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+            </div>
+            <div class="box-body">
+
+              <!--<form action="" method="POST">
+                {% csrf_token %}
+                Fecha1<input type="text" name="fecha1" id="fecha1">
+                fecha2<input type="text" name="fecha1" id="fecha2">
+                <input type="submit" value="Filtrar">
+              </form>-->
+              <div id="bar-chart" style="height: 300px;"></div>
+            </div>
+            <!-- /.box-body-->
+          </div>
+
+
+            <div class="box">
+            <div class="box-header">
+              <!--<h3 class="box-title">Ocupación Medicos por Epocas del Año</h3>-->
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table id="example3" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                  <th>Id perfil</th>
+                  <th>Estado civil</th>
+                  <th>Sexo</th>
+                  <th>Escolaridad</th>
+                  <th>Estrato</th>
+                  <th># Personas</th>
+                </tr>
+                </thead>
+                <tbody>
+                  {% for result in data %}
+                    <tr>
+                      <td>{{result.demografia_iddemografia}}</td>
+                      <td>{{result.estado_civil}}</td>
+                      <td>{{result.sexo}}</td>
+                      <td>{{result.nivel_escolaridad}}</td>
+                      <td>{{result.estrato}}</td>
+                      <td>{{result.total}}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+                <tfoot>
+                  <th>Id perfil</th>
+                  <th>Estado civil</th>
+                  <th>Sexo</th>
+                  <th>Escolaridad</th>
+                  <th>Estrato</th>
+                  <th># Personas</th>
+                </tfoot>
+              </table>
+            <!-- /.row -->
+            </div>
+          </div>
+          <div class = "row">
+            <div class= "col-md-6">
+          <div class="box box-default">
+            <div class="box-header with-border">
+              <h3 class="box-title">Estado Civil</h3>
+
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="chart-responsive">
+                    <canvas id="pieChart1" height="200"></canvas>
+                  </div>
+                  <!-- ./chart-responsive -->
+                </div>
+                <!-- /.col -->
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+            </div>
+            <!-- /.box-body -->
+          </div>
+        </div>
+
+        <div class= "col-md-6">
+          <div class="box box-default">
+            <div class="box-header with-border">
+              <h3 class="box-title">Sexo</h3>
+
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="chart-responsive">
+                    <canvas id="pieChart2" height="200"></canvas>
+                  </div>
+                  <!-- ./chart-responsive -->
+                </div>
+                <!-- /.col -->
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+            </div>
+            <!-- /.box-body -->
+          </div>
+        </div>
+
+        <div class= "col-md-6">
+          <div class="box box-default">
+            <div class="box-header with-border">
+              <h3 class="box-title">Nivel Escolaridad</h3>
+
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="chart-responsive">
+                    <canvas id="pieChart3" height="200"></canvas>
+                  </div>
+                  <!-- ./chart-responsive -->
+                </div>
+                <!-- /.col -->
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+            </div>
+            <!-- /.box-body -->
+          </div>
+        </div>
+
+        <div class= "col-md-6">
+          <div class="box box-default">
+            <div class="box-header with-border">
+              <h3 class="box-title">Estrato</h3>
+
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="chart-responsive">
+                    <canvas id="pieChart4" height="200"></canvas>
+                  </div>
+                  <!-- ./chart-responsive -->
+                </div>
+                <!-- /.col -->
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+            </div>
+            <!-- /.box-body -->
+          </div>
+        </div>
+      
+
+        </div>
+
+
+    </section>
+    <!-- /.content -->
+
+
+  </div>
+  <!-- /.content-wrapper -->
+
+
+<script type="text/javascript">
+  $("#example3").DataTable();
+
+    var myCalendar = new dhtmlXCalendarObject(["id_initial_date", "id_final_date"]);
+    /*
+     * BAR CHART
+     * ---------
+     */
+     datos_grafico = new Array();
+     //index, item in enumerate(items)
+     index = 0
+     {% for result in data %}
+         
+       datos_grafico[index] = ["{{result.demografia_iddemografia}}",{{result.total}}];
+       index+=1;
+
+    {% endfor %}
+    var bar_data = {
+      data : datos_grafico,
+      color: "#3c8dbc"
+    };
+    $.plot("#bar-chart", [bar_data], {
+      grid: {
+        borderWidth: 1,
+        borderColor: "#f3f3f3",
+        tickColor: "#f3f3f3"
+      },
+      series: {
+        bars: {
+          show: true,
+          barWidth: 0.5,
+          align: "center"
+        }
+      },
+      xaxis: {
+        mode: "categories",
+        tickLength: 0
+      }
+    });
+    /* END BAR CHART */
+
+
+//-------------
+  //- PIE CHART -
+  //-------------
+  // Get context with jQuery - using jQuery's .get() method.
+  var pieChartCanvas1 = $("#pieChart1").get(0).getContext("2d");
+  var pieChart1 = new Chart(pieChartCanvas1);
+  var PieData1= {{ estado_civil|safe }};
+
+  var pieChartCanvas2 = $("#pieChart2").get(0).getContext("2d");
+  var pieChart2 = new Chart(pieChartCanvas2);
+  var PieData2= {{ sexo|safe }};
+
+  var pieChartCanvas3 = $("#pieChart3").get(0).getContext("2d");
+  var pieChart3 = new Chart(pieChartCanvas3);
+  var PieData3= {{ escolaridad|safe }};
+
+  var pieChartCanvas4 = $("#pieChart4").get(0).getContext("2d");
+  var pieChart4 = new Chart(pieChartCanvas4);
+  var PieData4= {{ estrato|safe }};
+
+  var pieOptions = {
+    //Boolean - Whether we should show a stroke on each segment
+    segmentShowStroke: true,
+    //String - The colour of each segment stroke
+    segmentStrokeColor: "#fff",
+    //Number - The width of each segment stroke
+    segmentStrokeWidth: 1,
+    //Number - The percentage of the chart that we cut out of the middle
+    percentageInnerCutout: 50, // This is 0 for Pie charts
+    //Number - Amount of animation steps
+    animationSteps: 100,
+    //String - Animation easing effect
+    animationEasing: "easeOutBounce",
+    //Boolean - Whether we animate the rotation of the Doughnut
+    animateRotate: true,
+    //Boolean - Whether we animate scaling the Doughnut from the centre
+    animateScale: false,
+    //Boolean - whether to make the chart responsive to window resizing
+    responsive: true,
+    // Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
+    maintainAspectRatio: false,
+    //String - A tooltip template
+    tooltipTemplate: "<%=value %> <%=label%> usuarios"
+  };
+  //Create pie or douhnut chart
+  // You can switch between pie and douhnut using the method below.
+  pieChart1.Doughnut(PieData1, pieOptions);
+  pieChart2.Doughnut(PieData2, pieOptions);
+  pieChart3.Doughnut(PieData3, pieOptions);
+  pieChart4.Doughnut(PieData4, pieOptions);
+  //-----------------
+  //- END PIE CHART -
+  //-----------------
+
+
+</script>
+
+<!-- Optionally, you can add Slimscroll and FastClick plugins.
+     Both of these plugins are recommended to enhance the
+     user experience. Slimscroll is required when using the
+     fixed layout. -->
+
+{% endblock %}

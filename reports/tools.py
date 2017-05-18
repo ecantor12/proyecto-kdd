@@ -169,3 +169,23 @@ def productsTogether(initial_date, final_date):
 			medicamentos.append({'nombre_medicamento': x})
 	
 	return medicamentos
+
+
+def profiles(limit):
+
+	cursor = connection.cursor()
+	
+	if limit:
+		query = "Select demografia_iddemografia,estado_civil,sexo,nivel_escolaridad,estrato,count(demografia_iddemografia) as total from afiliaciones join persona on persona.idpersona=persona_idpersona join demografia on demografia.iddemografia=afiliaciones.demografia_iddemografia where persona.proviene_otra_eps='1' group by demografia_iddemografia,estado_civil,sexo,nivel_escolaridad,estrato order by total DESC limit "+str(limit)
+	else:
+		query = "Select demografia_iddemografia,estado_civil,sexo,nivel_escolaridad,estrato,count(demografia_iddemografia) as total from afiliaciones join persona on persona.idpersona=persona_idpersona join demografia on demografia.iddemografia=afiliaciones.demografia_iddemografia where persona.proviene_otra_eps='1' group by demografia_iddemografia,estado_civil,sexo,nivel_escolaridad,estrato order by total"
+	
+	#if initial_date!=None and final_date!=None:
+	#	query = "select nombre, sum(valor_pago) as pagos from pagos join cotizante on cotizante_idcotizante=idcotizante INNER JOIN fecha ON pagos.fecha_idfecha = fecha.idfecha where fecha.date_actual >= '"+str(initial_date)+"' and fecha.date_actual <= '"+str(final_date)+"' group by nombre order by pagos"
+	#else:
+	#	query = "select nombre, sum(valor_pago) as pagos from pagos join cotizante on cotizante_idcotizante=idcotizante INNER JOIN fecha ON pagos.fecha_idfecha = fecha.idfecha group by nombre order by pagos"
+
+	cursor.execute(query)
+	profiles = dictfetchall(cursor)
+	
+	return profiles

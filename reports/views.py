@@ -212,3 +212,88 @@ def products_together(request):
 
 	return render_to_response("reports/products_together.html", variables)
 
+def profilesEps(request):
+
+	form = LimitFilterReport(request.POST or request.GET)
+	limit = None
+
+	if not form.is_valid():
+		raise Exception("Form did not validate")
+
+	if form.cleaned_data["limit"]:
+		limit = form.cleaned_data["limit"]
+
+	data = profiles(limit)
+
+	estado_civil = {}
+	sexo = {}
+	escolaridad = {}
+	estrato = {}
+	_estado_civil = {}
+	_sexo = {}
+	_escolaridad = {}
+	_estrato = {}
+	l_estado_civil = []
+	l_sexo = []
+	l_escolaridad = []
+	l_estrato = []
+	total = 0
+
+	for i in data:
+		total += i['total']
+		if i['estado_civil'] in estado_civil:
+			estado_civil[i['estado_civil']] += i['total']
+		else:
+			estado_civil[i['estado_civil']] = i['total']
+		
+		if i['sexo'] in sexo:
+			sexo[i['sexo']] += i['total']
+		else:
+			sexo[i['sexo']] = i['total']
+		
+		if i['nivel_escolaridad'] in escolaridad:
+			escolaridad[i['nivel_escolaridad']] += i['total']
+		else:
+			escolaridad[i['nivel_escolaridad']] = i['total']
+		
+		if i['estrato'] in estrato:
+			estrato[i['estrato']] += i['total']
+		else:
+			estrato[i['estrato']] = i['total']
+
+	print "antes", estado_civil
+	
+	for key, value in estado_civil.iteritems():
+		_estado_civil["value"] = round(float((value*100)/total), 2)
+		_estado_civil["label"] = key.encode('utf-8')
+		l_estado_civil.append(dict.copy(_estado_civil))
+
+	for key, value in sexo.iteritems():
+		_sexo["value"] = round(float((value*100)/total), 2)
+		_sexo["label"] = key.encode('utf-8')
+		l_sexo.append(dict.copy(_sexo))
+
+	for key, value in escolaridad.iteritems():
+		_escolaridad["value"] = round(float((value*100)/total), 2)
+		_escolaridad["label"] = key.encode('utf-8')
+		l_escolaridad.append(dict.copy(_escolaridad))
+
+	for key, value in estrato.iteritems():
+		_estrato["value"] = round(float((value*100)/total), 2)
+		_estrato["label"] = key
+		l_estrato.append(dict.copy(_estrato))
+	
+	print "despues", _estado_civil
+
+	variables = RequestContext(request, {
+		"data": data,
+		"form": form,
+		"estado_civil": l_estado_civil,
+		"sexo": l_sexo,
+		"escolaridad": l_escolaridad,
+		"estrato": l_estrato,
+		"total": total,
+		})
+
+	return render_to_response("reports/profiles.html", variables)
+
